@@ -1,9 +1,28 @@
-const express = require('express');
-const{handlePartnership} = require('./formController');
+import {NextResponse} from 'next/server';
+import mongoose from 'mongoose';
 
-const router = express.Router();
+export async function POST(request) {
+    try {
+        console.log('Received form submission');
+        const data = await request.json();
+        console.log('Form data:', data);
+        
+        if (!process.env.MONGODB_URI) {
+            return NextResponse.json({ message: 'MongoDB URI not configured' }, { status: 500 });
+        }
+        console.log('Connecting to MongoDB...');
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+        console.log('Connected to MongoDB');
 
-router.post('/contact-partnership', handlePartnership);
-router.post('/contact-tender', handlePartnership);
+        return NextResponse.json({ message: 'Form submitted successfully' });
+    } catch (error) {
+        console.error('Error handling form submission:', error);
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    }
+}
 
-module.exports = router;
+
+
