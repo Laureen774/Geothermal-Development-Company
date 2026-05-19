@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: 
+Sitemap:https://geothermal-development-company-partnerships-and-tenders.vercel.app/sitemap.xml
