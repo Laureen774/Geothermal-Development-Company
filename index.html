@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geothermal Development Company | Partnership and Tenders </title>
+    <meta name="description" content="Explore partnership opportunities and tenders with Geothermal Development Company. Join us in advancing sustainable energy solutions through geothermal technology.">
+    <meta name="keywords" content="Geothermal Development Company, geothermal partnership, geothermal tenders, Kenya">
+    <meta name="robots" content="index, follow">
+    <link rel ="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Geothermal Development Company | Partnership and Tenders</h1>
+        <p>Partnerships & Tenders</p>
+
+    </header>
+
+    <section>
+        <h2>Partnership Opportunities</h2>
+        <p>Geothermal Development Company (GDC) is committed to fostering partnerships that drive innovation and sustainability in the geothermal energy sector. We invite businesses, research institutions, and organizations to collaborate with us on various projects and initiatives. Our partnership opportunities include joint ventures, research collaborations, and technology development partnerships.</p>
+    </section>
+
+    <section>
+        <h2>Tender Opportunities</h2>
+        <p>GDC regularly issues tenders for a wide range of services and products related to geothermal energy development. We encourage qualified companies to participate in our tendering process. Our tenders cover areas such as drilling services, equipment supply, consultancy services, and construction works. Stay updated on our latest tender opportunities by visiting our website or subscribing to our newsletter.</p>
+    </section>
+
+    <section>
+        <h2>Contact Us</h2>
+        <form id="contactForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Your Name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" placeholder="Partnership or Tender Inquiry" rows="4" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+        <p id="status"></p>
+    </section>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            const email = data.email;
+            const message = data.message;
+
+            const res = await fetch('https://YOUR-api.onrender.com/api/contact-partnership', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, message })
+            });
+
+        
+            
+
+            // Here you would typically send the data to a server
+            // For demonstration, we'll just display a success message
+            document.getElementById('status').textContent = 'Thank you for your inquiry, ' + data.name + '! We will get back to you shortly.';
+            this.reset();
+        });
+    </script>
+</body>
+</html>
