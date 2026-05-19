@@ -1,11 +1,18 @@
 const mongoose = require('mongoose');
+const submission = require('./models/submissionModel');
+const { buffer } = require('node:stream/consumers');
 
-const submissionSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  message: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
+async function saveSubmission(data) {
+    if (mongoose.connection.readyState === 0) {
+        await mongoose.connect(process.env.MONGODB_URI, {
+           bufferCommands: false,
+           useNewUrlParser: true,
+           useUnifiedTopology: true 
+        });
+    }
 
-const Submission = mongoose.model('Submission', submissionSchema);
-module.exports = Submission;
+    const sub = new submission(data);
+    await sub.save();
+}
+
+module.exports = saveSubmission;

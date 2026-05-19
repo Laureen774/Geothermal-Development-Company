@@ -1,15 +1,10 @@
-const Submission = require('./models/Submission');
-const sendEmail = require('./sendEmail');
-module.exports = async function (req, res) {
-   
+export async function handleForm(req, res) {
     try {
-        const { name, email, message } = req.body;
-        const newSubmission = new Submission({ name, email, message });
-        await newSubmission.save();
-        await sendEmail(email, 'Form Submission Received', `Thank you, ${name}. Your submission has been received.`);
-        res.status(201).json({ message: 'Email sent successfully' });
+        await sendEmail(req.body.email, 'New Contact Form Submission', `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage: ${req.body.message}`);
+        res.status(200).json({ message: 'Form submitted successfully' });
+    
     } catch (error) {
-        console.error('Error creating submission:', error);
+        console.error('Error submitting form:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-};
+}
