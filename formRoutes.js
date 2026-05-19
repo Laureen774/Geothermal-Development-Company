@@ -1,3 +1,6 @@
+export async function GET() {
+    return NextResponse.json({ message: 'Route is working' });
+}
 import {NextResponse} from 'next/server';
 import mongoose from 'mongoose';
 
