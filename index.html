@@ -28,15 +28,26 @@
 
     <section>
         <h2>Contact Us</h2>
-        <form id="contactForm">
-            <label for="name">Name:</label>
-            <input type="text" id="name" placeholder="Your Name" required>
+        <form id="contactForm" enctype="multipart/form-data">
+            <label for="formType">Inquiry Type: <span style="color: red;">*</span></label>
+            <select id="formType" name="formType" required>
+                <option value="">-- Select Type --</option>
+                <option value="Partnership">Partnership Inquiry</option>
+                <option value="Tender">Tender Inquiry</option>
+            </select>
 
-            <label for="email">Email:</label>
+            <label for="name">Name: <span style="color: red;">*</span></label>
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+
+            <label for="email">Email: <span style="color: red;">*</span></label>
             <input type="email" id="email" name="email" placeholder="Your Email" required>
 
-            <label for="message">Message:</label>
+            <label for="message">Message: <span style="color: red;">*</span></label>
             <textarea id="message" name="message" placeholder="Partnership or Tender Inquiry" rows="4" required></textarea>
+
+            <label for="attachments">Attachments (Optional):</label>
+            <input type="file" id="attachments" name="attachments" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif">
+            <small style="color: #666;">Max 5 files, 10MB each. Accepted: PDF, Word, Excel, TXT, Images</small>
 
             <button type="submit">Submit</button>
         </form>
@@ -44,28 +55,50 @@
     </section>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', function(event) {
+        const form = document.getElementById('contactForm');
+        const statusElement = document.getElementById('status');
+
+        form.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const formData = new FormData(event.target);
-            const data = Object.fromEntries(formData);
-            const email = data.email;
-            const message = data.message;
-
-            const res = await fetch('https://YOUR-api.onrender.com/api/contact-partnership', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, message })
-            });
-
-        
             
+            try {
+                // Get form data
+                const formData = new FormData(event.target);
+                
+                // Get API endpoint based on form type
+                const formType = formData.get('formType');
+                const endpoint = formType === 'Partnership' 
+                    ? '/api/contact-partnership'
+                    : '/api/contact-tender';
+                
+                // Show loading state
+                statusElement.textContent = 'Submitting your inquiry...';
+                statusElement.style.color = '#1abc9c';
 
-            // Here you would typically send the data to a server
-            // For demonstration, we'll just display a success message
-            document.getElementById('status').textContent = 'Thank you for your inquiry, ' + data.name + '! We will get back to you shortly.';
-            this.reset();
+                // Send request
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Success
+                    const name = formData.get('name');
+                    statusElement.textContent = `✓ Thank you for your ${formType.toLowerCase()} inquiry, ${name}! We will get back to you shortly. Check your email for confirmation.`;
+                    statusElement.style.color = '#27ae60';
+                    form.reset();
+                } else {
+                    // Error
+                    statusElement.textContent = `✗ ${result.message || 'An error occurred. Please try again.'}`;
+                    statusElement.style.color = '#e74c3c';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusElement.textContent = '✗ Network error. Please check your connection and try again.';
+                statusElement.style.color = '#e74c3c';
+            }
         });
     </script>
 </body>
